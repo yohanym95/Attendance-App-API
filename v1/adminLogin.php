@@ -5,7 +5,7 @@ require_once ('../include/DBOperations.php');
 $response = array();
 
   if($_SERVER['REQUEST_METHOD']=='POST'){
-      if(isset($_POST['adminEmail']) & isset($_POST['adminName']) & isset($_POST['adminPass']) ){
+      if(isset($_POST['adminEmail']) & isset($_POST['adminPass']) ){
 
         $db = new DBOperations();
 
@@ -13,8 +13,7 @@ $response = array();
             $admin = $db->getAdminByUsername($_POST['adminEmail']);
             $response['error'] = false;
             $response['id'] = $admin['id'];
-            $response['adminEmail'] = $admin['email'];
-            $response['adminName'] = $admin['adminName'];
+            $response['adminEmail'] = $admin['adminEmail'];
             
         }else{
             $response['error'] = true;

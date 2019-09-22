@@ -15,8 +15,9 @@ class DBOperations{
       return 0;
 
     }else{
+     $password1 = md5($stuPassword);
      $stmt = $this->con->prepare("INSERT INTO `students` (`id`, `stuName`, `stuEmail`, `stuRegNo`,`stuCourse`,`stuPassword`) VALUES (NULL, ?, ?, ?, ?, ?);");
-     $stmt->bind_param("sssss",$stuName,$stuEmail,$stuRegNo,$stuCourse,$stuPassword);
+     $stmt->bind_param("sssss",$stuName,$stuEmail,$stuRegNo,$stuCourse,$password1);
      if($stmt->execute()){
          return 1;
      }else{
@@ -35,6 +36,8 @@ class DBOperations{
     return $stmt->num_rows > 0;
 
   }
+
+  //get student list
 
 
   public function getStudent(){
@@ -85,6 +88,8 @@ class DBOperations{
        
     }
 
+    //get course  list
+
     public function getCourse(){
     
       $stmt = $this->con->prepare("SELECT courseNo,courseName,courseDep FROM course" );
@@ -132,6 +137,8 @@ class DBOperations{
          
       }
 
+      //get teacher list
+
       public function getTeacher(){
     
         $stmt = $this->con->prepare("SELECT teacherName,teacherEmail,teacherCourse FROM teacher" );
@@ -153,7 +160,7 @@ class DBOperations{
         }
 
 
-        //mark course attendence 
+        //mark course attendence // get student attendence list
         public function getStuAttendance($date,$course){
     
           $stmt = $this->con->prepare("SELECT stuRegNo,stuName FROM student_attendence WHERE Date = ? AND course = ?" );
@@ -180,12 +187,52 @@ class DBOperations{
 
         }
 
-        public function getUserByUsername($adminEmail){
-          $stmt = $this->con->prepare("SELECT * FROM admin WHERE adminEmail = ?");
+        public function getAdminByUsername($adminEmail){
+          $stmt = $this->con->prepare("SELECT * FROM admindb WHERE adminEmail = ?");
           $stmt ->bind_param("s",$adminEmail);
           $stmt ->execute();
           return $stmt ->get_result()->fetch_assoc();
         }
+
+
+        //Student login
+        public function stuLogin($stuEmail,$stuPassword){
+
+           $password = md5($stuPassword);
+           $stmt = $this->con->prepare("SELECT id FROM students WHERE stuEmail = ? AND stuPassword = ?");
+           $stmt ->bind_param("ss",$stuEmail,$password);
+           $stmt ->execute();
+           $stmt ->store_result();
+           return $stmt ->num_rows > 0;
+ 
+         }
+
+         public function getStudentByUsername($stuEmail){
+          $stmt = $this->con->prepare("SELECT * FROM students WHERE stuEmail = ?");
+          $stmt ->bind_param("s",$stuEmail);
+          $stmt ->execute();
+          return $stmt ->get_result()->fetch_assoc();
+        }
+
+        //Teacher login
+        public function teacherLogin($teacherEmail,$teacherPassword){
+
+          $password = md5($teacherPassword);
+          $stmt = $this->con->prepare("SELECT teacherId FROM teacher WHERE teacherEmail = ? AND teacherPassword = ?");
+          $stmt ->bind_param("ss",$teacherEmail,$teacherPassword);
+          $stmt ->execute();
+          $stmt ->store_result();
+          return $stmt ->num_rows > 0;
+
+        }
+
+        public function getTeacherByUsername($teacherEmail){
+         $stmt = $this->con->prepare("SELECT * FROM teacher WHERE teacherEmail = ?");
+         $stmt ->bind_param("s",$teacherEmail);
+         $stmt ->execute();
+         return $stmt ->get_result()->fetch_assoc();
+       }
+
     
       
     
