@@ -174,6 +174,19 @@ class DBOperations{
       
         }
 
+        //mark course attendence // get teacher attendence list
+        public function getTeacherAttendance($date,$course){
+    
+          $stmt = $this->con->prepare("SELECT teacherName,teacherEmail FROM teacher_attendence WHERE Date = ? AND course = ?" );
+         
+          $stmt->bind_param("ss",$date,$course);
+          $stmt ->execute();
+          $result = $stmt->get_result();
+      
+          return $result;
+      
+        }
+
         //Admin login
 
         public function adminLogin($adminEmail,$adminPass){
