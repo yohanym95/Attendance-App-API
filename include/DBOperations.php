@@ -246,11 +246,70 @@ class DBOperations{
          return $stmt ->get_result()->fetch_assoc();
        }
 
+       //Student Attendance
+  public function createStudentAttendance($Date,$stuName,$stuRegNo,$Attendance,$stuCourse){
+  
+    $stmt = $this->con->prepare("INSERT INTO `student_attendence` (`id`,`Date`, `stuName`, `stuRegNo`,`Attendance`,`course`) VALUES (NULL, ?, ?, ?, ?, ?);");
+    $stmt->bind_param("sssss",$Date,$stuName,$stuRegNo,$Attendance,$stuCourse);
+    if($stmt->execute()){
+        return 1;
+    }else{
+        return 2;
+    }
     
-      
+ }
+
+
+ //Teacher Attendance //have to make 
+ public function createTeacherAttendance($Date,$teacherName,$teacherEmail,$Attendance,$Course){
+  
+  $stmt = $this->con->prepare("INSERT INTO `student_attendence` (`id`,`Date`, `teacherName`, `teacherEmail`,`Attendance`,`Course`) VALUES (NULL, ?, ?, ?, ?, ?);");
+  $stmt->bind_param("sssss",$Date,$teacherName,$teacherEmail,$Attendance,$Course);
+  if($stmt->execute()){
+      return 1;
+  }else{
+      return 2;
+  }
+  
+ }
+
+
+ //Update student password
+ private function isStudentExist($stuEmail, $stuRegNo){
+  $stmt = $this->con->prepare("SELECT id FROM students WHERE stuEmail = ? OR stuRegNo = ?");
+  $stmt->bind_param("ss",$stuEmail,$stuRegNo );
+  $stmt->execute();
+  $stmt->store_result();
+  return $stmt->num_rows > 0;
+
+}
+
+public function createStu($stuEmail,$stuRegNo,$stuPassword){
+  if($this->isStudentExist($stuEmail,$stuRegNo)){
+
+   $password1 = md5($stuPassword);
+   $stmt = $this->con->prepare("UPDATE `students` SET stuPassword= ? WHERE stuEmail = ? AND stuRegNo = ?;");
+   $stmt->bind_param("sss",$password1,$stuEmail,$stuRegNo);
+   if($stmt->execute()){
+       return 1;
+   }else{
+       return 2;
+   }
+
+  }else{
+    return 0;
+  }
+   
+}
+    
     
 
   }
+
+
+  
+    
+ 
 
   
 
