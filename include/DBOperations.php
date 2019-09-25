@@ -274,32 +274,69 @@ class DBOperations{
  }
 
 
- //Update student password
- private function isStudentExist($stuEmail, $stuRegNo){
-  $stmt = $this->con->prepare("SELECT id FROM students WHERE stuEmail = ? OR stuRegNo = ?");
-  $stmt->bind_param("ss",$stuEmail,$stuRegNo );
-  $stmt->execute();
-  $stmt->store_result();
-  return $stmt->num_rows > 0;
+//  //Update student password
+//  private function isStudentExist($stuEmail, $stuRegNo){
+//   $stmt = $this->con->prepare("SELECT id FROM students WHERE stuEmail = ? OR stuRegNo = ?");
+//   $stmt->bind_param("ss",$stuEmail,$stuRegNo );
+//   $stmt->execute();
+//   $stmt->store_result();
+//   return $stmt->num_rows == 1;
 
+// }
+
+public function updateStudentPassword($stuPassword,$stuEmail){
+   $query = "UPDATE `students` SET stuPassword=? WHERE stuEmail=?;";
+   $password = md5($stuPassword);
+   if($stmt = $this->con->prepare($query)){
+     $stmt->bind_param("ss",$password,$stuEmail);
+     $stmt->execute();
+
+     if($stmt->affected_rows == 1){
+       return 1;
+     }else{
+       return 2;
+     }
+   }else{
+     return 0;
+   }
+   
 }
 
-public function createStu($stuEmail,$stuRegNo,$stuPassword){
-  if($this->isStudentExist($stuEmail,$stuRegNo)){
 
-   $password1 = md5($stuPassword);
-   $stmt = $this->con->prepare("UPDATE `students` SET stuPassword= ? WHERE stuEmail = ? AND stuRegNo = ?;");
-   $stmt->bind_param("sss",$password1,$stuEmail,$stuRegNo);
-   if($stmt->execute()){
-       return 1;
-   }else{
-       return 2;
-   }
+public function updateTeacherPassword($teacherPassword,$teacherEmail){
+  $query = "UPDATE `teacher` SET teacherPassword=? WHERE teacherEmail=?;";
+  $password = md5($teacherPassword);
+  if($stmt = $this->con->prepare($query)){
+    $stmt->bind_param("ss",$password,$teacherEmail);
+    $stmt->execute();
 
+    if($stmt->affected_rows == 1){
+      return 1;
+    }else{
+      return 2;
+    }
   }else{
     return 0;
   }
-   
+  
+}
+
+public function updateAdminPassword($adminPass,$adminEmail){
+  $query = "UPDATE `admindb` SET adminPass=? WHERE adminEmail=?;";
+ // $password = md5($teacherEmail);
+  if($stmt = $this->con->prepare($query)){
+    $stmt->bind_param("ss",$adminPass,$adminEmail);
+    $stmt->execute();
+
+    if($stmt->affected_rows == 1){
+      return 1;
+    }else{
+      return 2;
+    }
+  }else{
+    return 0;
+  }
+  
 }
     
     
