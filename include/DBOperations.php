@@ -338,6 +338,21 @@ public function updateAdminPassword($adminPass,$adminEmail){
   }
   
 }
+
+// get absent student list
+
+public function getStudentAbsent($Date,$course){
+  $query = "SELECT A.`stuName` ,A.`stuRegNo` FROM `students` AS A LEFT JOIN (select * FROM student_attendence WHERE Date = ? And course = ?) AS B ON B.`stuRegNo` = A.`stuRegNo` WHERE B.`stuRegNo` is null;";
+  $stmt = $this->con->prepare($query);
+         
+  $stmt->bind_param("ss",$Date,$course);
+  $stmt ->execute();
+  $result = $stmt->get_result();
+        
+      
+  return $result;
+
+}
     
     
 
