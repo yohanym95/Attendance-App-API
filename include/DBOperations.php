@@ -353,7 +353,20 @@ public function getStudentAbsent($Date,$course){
   return $result;
 
 }
-    
+
+//get absent teacher
+public function getTeacherAbsent($Date,$course){
+  $query = "SELECT A.`teacherName` ,A.`teacherEmail` FROM `teacher` AS A LEFT JOIN (select * FROM teacher_attendence WHERE Date = ? And Course = ?) AS B ON B.`teacherEmail` = A.`teacherEmail` WHERE B.`teacherEmail` is null;";
+  $stmt = $this->con->prepare($query);
+         
+  $stmt->bind_param("ss",$Date,$course);
+  $stmt ->execute();
+  $result = $stmt->get_result();
+        
+      
+  return $result;
+
+}  
     
 
   }
